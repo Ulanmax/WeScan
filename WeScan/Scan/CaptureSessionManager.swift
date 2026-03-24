@@ -91,12 +91,12 @@ final class CaptureSessionManager: NSObject, AVCaptureVideoDataOutputSampleBuffe
         }
         
         guard let deviceInput = try? AVCaptureDeviceInput(device: device),
-            captureSession.canAddInput(deviceInput),
-            captureSession.canAddOutput(photoOutput),
-            captureSession.canAddOutput(videoOutput) else {
-                let error = ImageScannerControllerError.inputDevice
-                delegate?.captureSessionManager(self, didFailWithError: error)
-                return
+              captureSession.canAddInput(deviceInput),
+              captureSession.canAddOutput(photoOutput),
+              captureSession.canAddOutput(videoOutput) else {
+            let error = ImageScannerControllerError.inputDevice
+            delegate?.captureSessionManager(self, didFailWithError: error)
+            return
         }
         
         do {
@@ -137,7 +137,7 @@ final class CaptureSessionManager: NSObject, AVCaptureVideoDataOutputSampleBuffe
         
         switch authorizationStatus {
         case .authorized:
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 self.captureSession.startRunning()
             }
             isDetecting = true
@@ -174,12 +174,12 @@ final class CaptureSessionManager: NSObject, AVCaptureVideoDataOutputSampleBuffe
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard isDetecting == true,
-            let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+              let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
-
+        
         let imageSize = CGSize(width: CVPixelBufferGetWidth(pixelBuffer), height: CVPixelBufferGetHeight(pixelBuffer))
-
+        
         if #available(iOS 11.0, *) {
             VisionRectangleDetector.rectangle(forPixelBuffer: pixelBuffer) { (rectangle) in
                 self.processRectangle(rectangle: rectangle, imageSize: imageSize)
@@ -263,7 +263,7 @@ extension CaptureSessionManager: AVCapturePhotoCaptureDelegate {
         delegate?.didStartCapturingPicture(for: self)
         
         if let sampleBuffer = photoSampleBuffer,
-            let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: nil) {
+           let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: nil) {
             completeImageCapture(with: imageData)
         } else {
             let error = ImageScannerControllerError.capture
