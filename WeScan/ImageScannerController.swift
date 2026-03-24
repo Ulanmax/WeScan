@@ -195,16 +195,28 @@ public struct ImageScannerResults {
     public var detectedRectangle: Quadrilateral
     
     @available(*, unavailable, renamed: "originalScan")
-    public var originalImage: UIImage?
+    public var originalImage: UIImage? {
+        get { fatalError("unavailable") }
+        set { fatalError("unavailable") }
+    }
     
     @available(*, unavailable, renamed: "croppedScan")
-    public var scannedImage: UIImage?
+    public var scannedImage: UIImage? {
+        get { fatalError("unavailable") }
+        set { fatalError("unavailable") }
+    }
     
     @available(*, unavailable, renamed: "enhancedScan")
-    public var enhancedImage: UIImage?
+    public var enhancedImage: UIImage? {
+        get { fatalError("unavailable") }
+        set { fatalError("unavailable") }
+    }
     
     @available(*, unavailable, renamed: "doesUserPreferEnhancedScan")
-    public var doesUserPreferEnhancedImage: Bool = false
+    public var doesUserPreferEnhancedImage: Bool {
+        get { fatalError("unavailable") }
+        set { fatalError("unavailable") }
+    }
     
     init(detectedRectangle: Quadrilateral, originalScan: ImageScannerScan, croppedScan: ImageScannerScan, enhancedScan: ImageScannerScan?, doesUserPreferEnhancedScan: Bool = false) {
         self.detectedRectangle = detectedRectangle
